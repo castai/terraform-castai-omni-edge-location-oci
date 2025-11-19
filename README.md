@@ -34,6 +34,7 @@ module "castai_oci_edge_location" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.1.1 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.0 |
 | <a name="requirement_oci"></a> [oci](#requirement\_oci) | >= 4.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0 |
@@ -42,11 +43,11 @@ module "castai_oci_edge_location" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_castai"></a> [castai](#provider\_castai) | >= 8.1.1 |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_oci"></a> [oci](#provider\_oci) | >= 4.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 4.0 |
+| <a name="provider_castai"></a> [castai](#provider\_castai) | 8.2.1 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+| <a name="provider_oci"></a> [oci](#provider\_oci) | 7.26.1 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.1.0 |
 
 ## Modules
 
