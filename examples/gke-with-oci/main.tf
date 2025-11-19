@@ -8,8 +8,6 @@ data "google_container_cluster" "gke" {
   project  = data.google_project.current.project_id
 }
 
-data "aws_region" "current" {}
-
 # =============================================================================
 # Onboard cluster to CAST AI
 # =============================================================================
@@ -56,10 +54,8 @@ module "castai_oci_edge_location" {
   cluster_id      = module.castai-gke-cluster.cluster_id
   organization_id = module.castai-gke-cluster.organization_id
 
-  oci = {
-    region     = var.oci_region
-    tenancy_id = var.oci_tenancy_id
-  }
+  region     = var.oci_region
+  tenancy_id = var.oci_tenancy_id
 
   tags = {
     ManagedBy = "terraform"

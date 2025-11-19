@@ -252,12 +252,12 @@ resource "castai_edge_location" "this" {
 
   # OCI cloud provider configuration
   oci = {
-    tenancy_id          = local.tenancy_id
-    compartment_id      = local.compartment_id
-    user_id             = oci_identity_user.castai.id
-    fingerprint         = oci_identity_api_key.castai.fingerprint
-    private_key_base64  = base64encode(tls_private_key.castai_api_key.private_key_pem)
-    vcn_id              = oci_core_vcn.main.id
-    subnet_id           = oci_core_subnet.main.id
+    tenancy_id            = local.tenancy_id
+    compartment_id        = local.compartment_id
+    user_id_wo            = oci_identity_user.castai.id
+    fingerprint_wo        = oci_identity_api_key.castai.fingerprint
+    private_key_base64_wo = base64encode(tls_private_key.castai_api_key.private_key_pem)
+    vcn_id                = oci_core_vcn.main.id
+    subnet_id             = oci_core_subnet.main.id
   }
 }

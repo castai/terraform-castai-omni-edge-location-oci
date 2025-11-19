@@ -1,72 +1,25 @@
-# terraform-castai-omni-edge-location
+# terraform-castai-omni-edge-location-oci
 
-Terraform module for creating CAST AI edge locations across multiple cloud providers (AWS, GCP, OCI).
+Terraform module for creating CAST AI edge locations on Oracle Cloud Infrastructure (OCI).
 
 ## Usage
 
 > **Warning**
 > This module expects the cluster to be onboarded to CAST AI with OMNI enabled.
 
-### AWS Edge Location
+### Basic Example
 
-
-
-```hcl
-module "castai_aws_edge_location" {
-  source = "github.com/castai/terraform-castai-omni-edge-location"
-
-  cluster_id      = var.cluster_id
-  organization_id = var.organization_id
-
-  aws = {
-    region = "us-east-1"
-  }
-
-  tags = {
-    ManagedBy = "terraform"
-  }
-}
-```
-
-### GCP Edge Location
-
-> **Note:** The GCP provider must be configured with the target project before using this module.
-
-```hcl
-provider "google" {
-  project = "my-gcp-project"
-  region  = "europe-west4"
-}
-
-module "castai_gcp_edge_location" {
-  source = "github.com/castai/terraform-castai-omni-edge-location"
-
-  cluster_id      = var.cluster_id
-  organization_id = var.organization_id
-
-  gcp = {
-    region = "europe-west4"
-  }
-
-  tags = {
-    ManagedBy = "terraform"
-  }
-}
-```
-
-### OCI Edge Location
+> **Note:** The OCI provider must be configured with your region and credentials before using this module.
 
 ```hcl
 module "castai_oci_edge_location" {
-  source = "github.com/castai/terraform-castai-omni-edge-location"
+  source  = "castai/omni-edge-location-oci/castai"
+  version = "~> 1.0"
 
   cluster_id      = var.cluster_id
   organization_id = var.organization_id
-
-  oci = {
-    region     = "us-ashburn-1"
-    tenancy_id = var.oci_tenancy_id
-  }
+  region          = "us-ashburn-1"
+  tenancy_id      = var.tenancy_ocid
 
   tags = {
     ManagedBy = "terraform"
@@ -82,6 +35,7 @@ module "castai_oci_edge_location" {
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.1.1 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.0 |
+| <a name="requirement_oci"></a> [oci](#requirement\_oci) | >= 4.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0 |
 
@@ -89,50 +43,59 @@ module "castai_oci_edge_location" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_castai"></a> [castai](#provider\_castai) | 8.1.1 |
+| <a name="provider_castai"></a> [castai](#provider\_castai) | 8.2.1 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+| <a name="provider_oci"></a> [oci](#provider\_oci) | 7.26.1 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.1.0 |
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_aws_resources"></a> [aws\_resources](#module\_aws\_resources) | ./modules/aws | n/a |
-| <a name="module_gcp_resources"></a> [gcp\_resources](#module\_gcp\_resources) | ./modules/gcp | n/a |
-| <a name="module_oci_resources"></a> [oci\_resources](#module\_oci\_resources) | ./modules/oci | n/a |
+No modules.
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [castai_edge_location.this](https://registry.terraform.io/providers/castai/castai/latest/docs/resources/edge_location) | resource |
-| [null_resource.validate_cloud_provider](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.validate_region](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [oci_core_default_route_table.main](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_default_route_table) | resource |
+| [oci_core_internet_gateway.main](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_internet_gateway) | resource |
+| [oci_core_security_list.main](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_security_list) | resource |
+| [oci_core_subnet.main](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_subnet) | resource |
+| [oci_core_vcn.main](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_vcn) | resource |
+| [oci_identity_api_key.castai](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/identity_api_key) | resource |
+| [oci_identity_group.castai](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/identity_group) | resource |
+| [oci_identity_policy.castai](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/identity_policy) | resource |
+| [oci_identity_user.castai](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/identity_user) | resource |
+| [oci_identity_user_group_membership.castai](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/identity_user_group_membership) | resource |
 | [random_id.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
+| [tls_private_key.castai_api_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
+| [oci_identity_availability_domains.ads](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/identity_availability_domains) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws"></a> [aws](#input\_aws) | AWS cloud configuration. Only one of aws, gcp, or oci should be provided. All cloud resources will be created by the module. | <pre>object({<br/>    region = string # AWS region (must match AWS provider config)<br/>  })</pre> | `null` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | CAST AI cluster ID | `string` | n/a | yes |
-| <a name="input_description"></a> [description](#input\_description) | Description of the edge location. If not provided, will be auto-generated based on cloud provider | `string` | `null` | no |
-| <a name="input_gcp"></a> [gcp](#input\_gcp) | GCP cloud configuration. Only one of aws, gcp, or oci should be provided. All cloud resources will be created by the module. | <pre>object({<br/>    region = string<br/>  })</pre> | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the edge location. If not provided, will be auto-generated | `string` | `null` | no |
-| <a name="input_oci"></a> [oci](#input\_oci) | OCI cloud configuration. Only one of aws, gcp, or oci should be provided. All cloud resources will be created by the module. | <pre>object({<br/>    region         = string           # OCI region (must match OCI provider config)<br/>    tenancy_id     = string           # OCI tenancy OCID (must match OCI provider config)<br/>    compartment_id = optional(string) # Optional: OCI compartment OCID. If not provided, uses tenancy root compartment<br/>  })</pre> | `null` | no |
+| <a name="input_compartment_id"></a> [compartment\_id](#input\_compartment\_id) | OCI compartment OCID where resources will be created. If not provided, uses tenancy root compartment | `string` | `null` | no |
+| <a name="input_description"></a> [description](#input\_description) | Description of the edge location | `string` | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | Name for the edge location. If not provided, will be auto-generated | `string` | `null` | no |
 | <a name="input_organization_id"></a> [organization\_id](#input\_organization\_id) | CAST AI organization ID | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to resources | `map(string)` | `{}` | no |
+| <a name="input_region"></a> [region](#input\_region) | OCI region (must match OCI provider configuration) | `string` | n/a | yes |
+| <a name="input_security_list_source_cidr"></a> [security\_list\_source\_cidr](#input\_security\_list\_source\_cidr) | Source CIDR for security list ingress rules | `string` | `"0.0.0.0/0"` | no |
+| <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | CIDR block for the subnet | `string` | `"10.0.0.0/24"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Freeform tags to apply to OCI resources | `map(string)` | `{}` | no |
+| <a name="input_tenancy_id"></a> [tenancy\_id](#input\_tenancy\_id) | OCI tenancy OCID. Should match the OCI provider configuration. | `string` | n/a | yes |
+| <a name="input_vcn_cidr"></a> [vcn\_cidr](#input\_vcn\_cidr) | CIDR block for the VCN | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_aws_resources"></a> [aws\_resources](#output\_aws\_resources) | AWS resources created (if applicable) |
-| <a name="output_cloud_provider"></a> [cloud\_provider](#output\_cloud\_provider) | Cloud provider used (aws, gcp, or oci) |
-| <a name="output_edge_location_id"></a> [edge\_location\_id](#output\_edge\_location\_id) | ID of the created edge location |
-| <a name="output_edge_location_name"></a> [edge\_location\_name](#output\_edge\_location\_name) | Name of the created edge location |
-| <a name="output_gcp_resources"></a> [gcp\_resources](#output\_gcp\_resources) | GCP resources created (if applicable) |
-| <a name="output_oci_resources"></a> [oci\_resources](#output\_oci\_resources) | OCI resources created (if applicable) |
-| <a name="output_region"></a> [region](#output\_region) | Region of the edge location |
+| <a name="output_edge_location_id"></a> [edge\_location\_id](#output\_edge\_location\_id) | CAST AI edge location ID |
+| <a name="output_edge_location_name"></a> [edge\_location\_name](#output\_edge\_location\_name) | CAST AI edge location name |
+| <a name="output_oci_resources"></a> [oci\_resources](#output\_oci\_resources) | OCI resources created for the edge location |
 <!-- END_TF_DOCS -->
 
 ## License
