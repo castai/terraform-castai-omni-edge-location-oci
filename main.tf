@@ -23,6 +23,14 @@ locals {
 
   # Use provided compartment_id or fall back to tenancy root compartment
   compartment_id = var.compartment_id != null ? var.compartment_id : var.tenancy_id
+
+  # Merge tags once for reuse across all resources
+  common_tags = merge(
+    var.tags,
+    {
+      "cast-omni:cluster-id" = var.cluster_id
+    }
+  )
 }
 
 # Data source to get availability domains for the region configured in OCI provider
@@ -58,7 +66,7 @@ resource "oci_core_vcn" "main" {
   display_name   = local.resource_name
   cidr_blocks    = [var.vcn_cidr]
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # Internet Gateway
@@ -68,7 +76,7 @@ resource "oci_core_internet_gateway" "main" {
   display_name   = local.resource_name
   enabled        = true
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # Default Route Table - update with internet gateway route
@@ -82,7 +90,7 @@ resource "oci_core_default_route_table" "main" {
     network_entity_id = oci_core_internet_gateway.main.id
   }
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # Security List
@@ -134,7 +142,7 @@ resource "oci_core_security_list" "main" {
     }
   }
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # Regional Subnet
@@ -146,7 +154,7 @@ resource "oci_core_subnet" "main" {
   route_table_id    = oci_core_vcn.main.default_route_table_id
   security_list_ids = [oci_core_security_list.main.id]
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # =============================================================================
@@ -159,7 +167,7 @@ resource "oci_identity_user" "castai" {
   name           = local.resource_name
   description    = "CAST AI user for edge location ${local.generated_name}"
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # IAM Group for CAST AI
@@ -169,7 +177,7 @@ resource "oci_identity_group" "castai" {
   description    = "Cast AI group for edge location ${local.generated_name}"
 
   freeform_tags = merge(
-    var.tags,
+    local.common_tags,
     {
       "cast-omni:edge-location-name" = local.generated_name
     }
@@ -209,7 +217,7 @@ resource "oci_identity_policy" "castai" {
     "Allow group id ${oci_identity_group.castai.id} to read compartments in tenancy"
   ]
 
-  freeform_tags = var.tags
+  freeform_tags = local.common_tags
 }
 
 # =============================================================================
