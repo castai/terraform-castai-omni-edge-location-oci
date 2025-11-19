@@ -1,0 +1,61 @@
+variable "name" {
+  type        = string
+  description = "Name for the edge location. If not provided, will be auto-generated"
+  default     = null
+}
+
+variable "cluster_id" {
+  type        = string
+  description = "CAST AI cluster ID"
+}
+
+variable "organization_id" {
+  type        = string
+  description = "CAST AI organization ID"
+}
+
+variable "description" {
+  type        = string
+  description = "Description of the edge location"
+  default     = null
+}
+
+variable "region" {
+  description = "OCI region (must match OCI provider configuration)"
+  type        = string
+}
+
+variable "tenancy_id" {
+  description = "OCI tenancy OCID. Should match the OCI provider configuration."
+  type        = string
+}
+
+variable "compartment_id" {
+  description = "OCI compartment OCID where resources will be created. If not provided, uses tenancy root compartment"
+  type        = string
+  default     = null
+}
+
+variable "vcn_cidr" {
+  description = "CIDR block for the VCN"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "subnet_cidr" {
+  description = "CIDR block for the subnet"
+  type        = string
+  default     = "10.0.0.0/24"
+}
+
+variable "security_list_source_cidr" {
+  description = "Source CIDR for security list ingress rules"
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
+variable "tags" {
+  description = "Freeform tags to apply to OCI resources"
+  type        = map(string)
+  default     = {}
+}
