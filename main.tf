@@ -168,6 +168,7 @@ resource "oci_identity_user" "castai" {
   description    = "CAST AI user for edge location ${local.generated_name}"
 
   freeform_tags = local.common_tags
+  email         = "${local.resource_name}@cast.ai"
 }
 
 # IAM Group for CAST AI
