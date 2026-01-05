@@ -39,16 +39,6 @@ module "castai_oci_edge_location" {
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_castai"></a> [castai](#provider\_castai) | 8.4.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
-| <a name="provider_oci"></a> [oci](#provider\_oci) | 7.27.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.1.0 |
-
 ## Modules
 
 No modules.
