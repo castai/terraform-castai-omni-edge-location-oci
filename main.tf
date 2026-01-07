@@ -106,18 +106,6 @@ resource "oci_core_security_list" "main" {
     stateless   = false
   }
 
-  # Ingress rule - TCP 443
-  ingress_security_rules {
-    source    = var.security_list_source_cidr
-    protocol  = "6" # TCP
-    stateless = false
-
-    tcp_options {
-      min = 443
-      max = 443
-    }
-  }
-
   # Ingress rule - TCP 6443
   ingress_security_rules {
     source    = var.security_list_source_cidr
