@@ -182,7 +182,7 @@ resource "oci_identity_user_group_membership" "castai" {
 # IAM Policy (unique per edge location)
 # This policy grants the CAST AI group permissions to manage compute and network resources
 resource "oci_identity_policy" "castai" {
-  compartment_id = local.tenancy_id
+  compartment_id = local.compartment_id
   name           = local.policy_name
   description    = "Cast AI policy for edge location ${local.generated_name} in compartment ${local.compartment_id}"
   version_date   = "2025-10-20"
@@ -196,14 +196,7 @@ resource "oci_identity_policy" "castai" {
 
     # Virtual network usage and read
     "Allow group id ${oci_identity_group.castai.id} to use virtual-network-family in compartment id ${local.compartment_id}",
-    "Allow group id ${oci_identity_group.castai.id} to read virtual-network-family in compartment id ${local.compartment_id}",
-
-    # Identity read permissions (users, groups)
-    "Allow group id ${oci_identity_group.castai.id} to read users in tenancy",
-    "Allow group id ${oci_identity_group.castai.id} to read groups in tenancy",
-
-    # Compartment read permissions
-    "Allow group id ${oci_identity_group.castai.id} to read compartments in tenancy"
+    "Allow group id ${oci_identity_group.castai.id} to read virtual-network-family in compartment id ${local.compartment_id}"
   ]
 
   freeform_tags = local.common_tags
