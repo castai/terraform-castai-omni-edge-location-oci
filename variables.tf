@@ -48,14 +48,19 @@ variable "subnet_cidr" {
   default     = "10.0.0.0/24"
 }
 
-variable "security_list_source_cidr" {
-  description = "Source CIDR for security list ingress rules"
-  type        = string
-  default     = "0.0.0.0/0"
-}
-
 variable "tags" {
   description = "Freeform tags to apply to OCI resources"
   type        = map(string)
   default     = {}
+}
+
+variable "control_plane" {
+  description = <<-EOT
+    Edge location control plane configuration.
+    - ha (bool): enable high availability mode for the Edge location control plane (default: true)
+  EOT
+  type = object({
+    ha = optional(bool, true)
+  })
+  default = {}
 }

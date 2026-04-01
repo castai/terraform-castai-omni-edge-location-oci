@@ -4,11 +4,12 @@ terraform {
   required_providers {
     castai = {
       source  = "castai/castai"
-      version = ">= 8.1.1"
+      version = ">= 8.31.1"
     }
     oci = {
-      source  = "oracle/oci"
-      version = ">= 4.0"
+      source                = "oracle/oci"
+      version               = ">= 4.0"
+      configuration_aliases = [oci.home]
     }
     tls = {
       source  = "hashicorp/tls"

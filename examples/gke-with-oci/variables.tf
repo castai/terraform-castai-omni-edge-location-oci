@@ -24,6 +24,16 @@ variable "oci_tenancy_id" {
   type = string
 }
 
+variable "oci_compartment_id" {
+  type = string
+}
+
 variable "oci_region" {
   type = string
+  description = "OCI region where the Omni edge location is created."
+}
+
+variable "oci_home_region" {
+  type        = string
+  description = "OCI home region for IAM resources."
 }
