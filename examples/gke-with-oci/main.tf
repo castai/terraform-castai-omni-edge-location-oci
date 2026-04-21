@@ -51,11 +51,17 @@ module "castai-gke-cluster" {
 module "castai_oci_edge_location" {
   source = "../.."
 
+  providers = {
+    oci      = oci
+    oci.home = oci.home
+  }
+
   cluster_id      = module.castai-gke-cluster.cluster_id
   organization_id = module.castai-gke-cluster.organization_id
 
-  region     = var.oci_region
-  tenancy_id = var.oci_tenancy_id
+  region         = var.oci_region
+  tenancy_id     = var.oci_tenancy_id
+  compartment_id = var.oci_compartment_id
 
   tags = {
     ManagedBy = "terraform"

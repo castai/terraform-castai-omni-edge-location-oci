@@ -4,7 +4,7 @@ terraform {
   required_providers {
     castai = {
       source  = "castai/castai"
-      version = ">= 8.1.0"
+      version = ">= 8.31.1"
     }
     google = {
       source  = "hashicorp/google"
@@ -12,7 +12,7 @@ terraform {
     }
     oci = {
       source  = "oracle/oci"
-      version = "7.4.0"
+      version = ">= 7.4.0"
     }
   }
 }
@@ -23,6 +23,11 @@ provider "google" {
 
 provider "oci" {
   region = var.oci_region
+}
+
+provider "oci" {
+  alias  = "home"
+  region = var.oci_home_region
 }
 
 provider "helm" {

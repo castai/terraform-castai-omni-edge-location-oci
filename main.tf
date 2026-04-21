@@ -56,6 +56,7 @@ resource "null_resource" "validate_region" {
   }
 }
 
+
 # =============================================================================
 # VCN and Networking
 # =============================================================================
@@ -69,78 +70,67 @@ resource "oci_core_vcn" "main" {
   freeform_tags = local.common_tags
 }
 
-# Internet Gateway
-resource "oci_core_internet_gateway" "main" {
+# NAT Gateway, provides outbound-only internet access for private subnet instances
+resource "oci_core_nat_gateway" "main" {
   compartment_id = local.compartment_id
   vcn_id         = oci_core_vcn.main.id
   display_name   = local.resource_name
-  enabled        = true
 
   freeform_tags = local.common_tags
 }
 
-# Default Route Table - update with internet gateway route
-resource "oci_core_default_route_table" "main" {
-  manage_default_resource_id = oci_core_vcn.main.default_route_table_id
-  display_name               = local.resource_name
+# NAT Route Table, routes all egress traffic through the NAT gateway
+resource "oci_core_route_table" "nat" {
+  compartment_id = local.compartment_id
+  vcn_id         = oci_core_vcn.main.id
+  display_name   = "${local.resource_name}-nat"
 
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_internet_gateway.main.id
+    network_entity_id = oci_core_nat_gateway.main.id
   }
 
   freeform_tags = local.common_tags
 }
 
-# Security List
-resource "oci_core_security_list" "main" {
+# Network Security Group, allows intra-NSG traffic and all egress
+resource "oci_core_network_security_group" "main" {
   compartment_id = local.compartment_id
   vcn_id         = oci_core_vcn.main.id
   display_name   = local.resource_name
 
-  # Egress rule - allow all outbound
-  egress_security_rules {
-    destination = "0.0.0.0/0"
-    protocol    = "all"
-    stateless   = false
-  }
-
-  # Ingress rule - TCP 6443
-  ingress_security_rules {
-    source    = var.security_list_source_cidr
-    protocol  = "6" # TCP
-    stateless = false
-
-    tcp_options {
-      min = 6443
-      max = 6443
-    }
-  }
-
-  # Ingress rule - UDP 51840
-  ingress_security_rules {
-    source    = var.security_list_source_cidr
-    protocol  = "17" # UDP
-    stateless = false
-
-    udp_options {
-      min = 51840
-      max = 51840
-    }
-  }
-
   freeform_tags = local.common_tags
 }
 
-# Regional Subnet
+# Ingress: allow all traffic between instances in the same NSG
+resource "oci_core_network_security_group_security_rule" "ingress" {
+  network_security_group_id = oci_core_network_security_group.main.id
+  direction                 = "INGRESS"
+  protocol                  = "all"
+  source                    = oci_core_network_security_group.main.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+}
+
+# Egress: allow all outbound traffic
+resource "oci_core_network_security_group_security_rule" "egress" {
+  network_security_group_id = oci_core_network_security_group.main.id
+  direction                 = "EGRESS"
+  protocol                  = "all"
+  destination               = "0.0.0.0/0"
+  destination_type          = "CIDR_BLOCK"
+  stateless                 = false
+}
+
+# Regional Private Subnet, no public IPs; uses NAT route table for egress
 resource "oci_core_subnet" "main" {
-  compartment_id    = local.compartment_id
-  vcn_id            = oci_core_vcn.main.id
-  cidr_block        = var.subnet_cidr
-  display_name      = local.resource_name
-  route_table_id    = oci_core_vcn.main.default_route_table_id
-  security_list_ids = [oci_core_security_list.main.id]
+  compartment_id             = local.compartment_id
+  vcn_id                     = oci_core_vcn.main.id
+  cidr_block                 = var.subnet_cidr
+  display_name               = local.resource_name
+  route_table_id             = oci_core_route_table.nat.id
+  prohibit_public_ip_on_vnic = true
 
   freeform_tags = local.common_tags
 }
@@ -151,6 +141,7 @@ resource "oci_core_subnet" "main" {
 
 # IAM User for CAST AI
 resource "oci_identity_user" "castai" {
+  provider       = oci.home
   compartment_id = local.tenancy_id
   name           = local.resource_name
   description    = "CAST AI user for edge location ${local.generated_name}"
@@ -161,6 +152,7 @@ resource "oci_identity_user" "castai" {
 
 # IAM Group for CAST AI
 resource "oci_identity_group" "castai" {
+  provider       = oci.home
   compartment_id = local.tenancy_id
   name           = local.resource_name
   description    = "Cast AI group for edge location ${local.generated_name}"
@@ -175,6 +167,7 @@ resource "oci_identity_group" "castai" {
 
 # Add user to group
 resource "oci_identity_user_group_membership" "castai" {
+  provider = oci.home
   user_id  = oci_identity_user.castai.id
   group_id = oci_identity_group.castai.id
 }
@@ -182,6 +175,7 @@ resource "oci_identity_user_group_membership" "castai" {
 # IAM Policy (unique per edge location)
 # This policy grants the CAST AI group permissions to manage compute and network resources
 resource "oci_identity_policy" "castai" {
+  provider       = oci.home
   compartment_id = local.compartment_id
   name           = local.policy_name
   description    = "Cast AI policy for edge location ${local.generated_name} in compartment ${local.compartment_id}"
@@ -214,6 +208,7 @@ resource "tls_private_key" "castai_api_key" {
 
 # Upload public key to OCI user
 resource "oci_identity_api_key" "castai" {
+  provider  = oci.home
   user_id   = oci_identity_user.castai.id
   key_value = tls_private_key.castai_api_key.public_key_pem
 
@@ -240,7 +235,9 @@ resource "castai_edge_location" "this" {
     }
   ]
 
-  # OCI cloud provider configuration
+  control_plane      = var.control_plane
+  control_plane_mode = "SHARED"
+
   oci = {
     tenancy_id            = local.tenancy_id
     compartment_id        = local.compartment_id
@@ -249,5 +246,7 @@ resource "castai_edge_location" "this" {
     private_key_base64_wo = base64encode(tls_private_key.castai_api_key.private_key_pem)
     vcn_id                = oci_core_vcn.main.id
     subnet_id             = oci_core_subnet.main.id
+    vcn_cidr              = var.vcn_cidr
+    security_group_id     = oci_core_network_security_group.main.id
   }
 }

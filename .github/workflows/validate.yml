@@ -32,9 +32,6 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
-
       - name: Run TFLint
         run: |
           tflint --init
@@ -47,6 +44,8 @@ jobs:
               echo "Validating example: $example"
               cd "$example"
               terraform init -backend=false
+              # The terraform validation covers both the example and the module.
+              # We cannot directly validate the root module because it contains providers with alias.
               terraform validate
               cd -
             fi
