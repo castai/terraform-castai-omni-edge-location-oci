@@ -92,7 +92,7 @@ module "castai_oci_edge_location" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.31.1 |
+| <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.34.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.0 |
 | <a name="requirement_oci"></a> [oci](#requirement\_oci) | >= 4.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
@@ -133,6 +133,7 @@ No modules.
 | <a name="input_control_plane"></a> [control\_plane](#input\_control\_plane) | Edge location control plane configuration.<br/>- ha (bool): enable high availability mode for the Edge location control plane (default: true) | <pre>object({<br/>    ha = optional(bool, true)<br/>  })</pre> | `{}` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description of the edge location | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for the edge location. If not provided, will be auto-generated | `string` | `null` | no |
+| <a name="input_networking"></a> [networking](#input\_networking) | Edge cluster networking configuration.<br/>- tunneled\_cidrs (list(string)): list of destination CIDR blocks whose traffic should be routed through the main cluster instead of directly from the edge cluster. | <pre>object({<br/>    tunneled_cidrs = optional(list(string))<br/>  })</pre> | `null` | no |
 | <a name="input_organization_id"></a> [organization\_id](#input\_organization\_id) | CAST AI organization ID | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | OCI region (must match OCI provider configuration) | `string` | n/a | yes |
 | <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | CIDR block for the subnet | `string` | `"10.0.0.0/24"` | no |
