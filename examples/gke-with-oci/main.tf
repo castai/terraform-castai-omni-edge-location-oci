@@ -22,7 +22,7 @@ module "castai-gke-iam" {
 
 module "castai-gke-cluster" {
   source  = "castai/gke-cluster/castai"
-  version = "~> 9"
+  version = "~> 10"
 
   api_url          = var.castai_api_url
   castai_api_token = var.castai_api_token
@@ -41,7 +41,7 @@ module "castai-gke-cluster" {
     }
   }
 
-  // TODO: enable omni
+  install_omni = true
 }
 
 # =============================================================================
@@ -66,5 +66,6 @@ module "castai_oci_edge_location" {
   tags = {
     ManagedBy = "terraform"
   }
-}
 
+  depends_on = [module.castai-gke-cluster]
+}
