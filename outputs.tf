@@ -19,3 +19,10 @@ output "oci_resources" {
     security_group_id = oci_core_network_security_group.main.id
   }
 }
+
+output "edge_configuration_ids" {
+  description = "Map of edge configuration IDs by configuration key"
+  value = {
+    for k, v in castai_edge_configuration.this : k => v.id
+  }
+}
