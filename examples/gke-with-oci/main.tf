@@ -63,6 +63,21 @@ module "castai_oci_edge_location" {
   tenancy_id     = var.oci_tenancy_id
   compartment_id = var.oci_compartment_id
 
+  default_edge_configuration_name = "gpu"
+
+  edge_configurations = {
+    gpu = {
+      name               = "GPU configuration"
+      image_id           = "Oracle-Linux-9-GPU" # GPU-enabled OCI image
+      boot_disk_size_gib = 200
+      tags = {
+        workload    = "gpu"
+        environment = "production"
+      }
+      user_data_base64 = "IyEvYmluL2Jhc2gKCmVjaG8gImhlbGxvIHdvcmxkIGZyb20gY3VzdG9tIHNjcmlwdCI="
+    }
+  }
+
   tags = {
     ManagedBy = "terraform"
   }

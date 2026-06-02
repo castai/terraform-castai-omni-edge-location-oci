@@ -75,3 +75,54 @@ variable "networking" {
   })
   default = null
 }
+
+variable "edge_configurations" {
+  description = <<-EOT
+    Map of OCI edge configurations to create for this edge location.
+
+    Each configuration supports the following attributes:
+    - name (string, required): Name of the edge configuration.
+    - image_id (string, optional): OCI image OCID or display name for edge instances (e.g., "Oracle-Linux-9" or "ocid1.image.oc1..xxxxxxxxx").
+    - boot_disk_size_gib (number, optional): Boot disk size in GiB.
+    - user_data_base64 (string, optional): Base64 encoded user data to run on the edge as part of bootstrap. The payload must start with either `#cloud-config` (cloud-init YAML) or `#!` (shell script with a shebang).
+    - tags (map(string), optional): Tags to apply to edge instances created with this configuration.
+    - cri (map(string), optional): Container runtime interface configuration. Defaults to `{}`.
+
+    Example:
+    edge_configurations = {
+      "default" = {
+        image_id = "Oracle-Linux-9"
+        tags = {
+          environment = "production"
+        }
+      }
+      "gpu" = {
+        image_id           = "ocid1.image.oc1.iad.example"
+        boot_disk_size_gib = 200
+        tags = {
+          workload = "gpu"
+        }
+      }
+    }
+  EOT
+  type = map(object({
+    name               = string
+    image_id           = optional(string)
+    boot_disk_size_gib = optional(number)
+    user_data_base64   = optional(string)
+    cri                = optional(map(string), {})
+    tags               = optional(map(string), {})
+  }))
+  default = {}
+}
+
+variable "default_edge_configuration_name" {
+  type        = string
+  description = "Name of the default edge configuration"
+  default     = ""
+
+  validation {
+    condition     = var.default_edge_configuration_name == "" || can(var.edge_configurations[var.default_edge_configuration_name])
+    error_message = "The specified default_edge_configuration_name does not match any key in var.edge_configurations."
+  }
+}

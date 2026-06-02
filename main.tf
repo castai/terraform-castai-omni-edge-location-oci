@@ -251,3 +251,34 @@ resource "castai_edge_location" "this" {
     security_group_id     = oci_core_network_security_group.main.id
   }
 }
+
+# =============================================================================
+# CAST AI Edge Configuration (OCI)
+# =============================================================================
+
+resource "castai_edge_configuration" "this" {
+  for_each = var.edge_configurations
+
+  organization_id  = var.organization_id
+  cluster_id       = var.cluster_id
+  edge_location_id = castai_edge_location.this.id
+  name             = each.value.name
+  user_data_base64 = each.value.user_data_base64
+  cri              = each.value.cri
+
+  oci = {
+    image_id           = each.value.image_id
+    boot_disk_size_gib = each.value.boot_disk_size_gib
+    tags               = each.value.tags
+  }
+}
+
+resource "castai_edge_configuration_default" "this" {
+  count = var.default_edge_configuration_name != "" ? 1 : 0
+
+  organization_id  = var.organization_id
+  cluster_id       = var.cluster_id
+  edge_location_id = castai_edge_location.this.id
+  configuration_id = castai_edge_configuration.this[var.default_edge_configuration_name].id
+
+}
