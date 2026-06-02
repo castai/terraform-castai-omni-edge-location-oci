@@ -92,7 +92,7 @@ module "castai_oci_edge_location" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.39.0 |
+| <a name="requirement_castai"></a> [castai](#requirement\_castai) | >= 8.39.1 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.0 |
 | <a name="requirement_oci"></a> [oci](#requirement\_oci) | >= 4.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
