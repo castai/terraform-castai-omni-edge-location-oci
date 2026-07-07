@@ -228,6 +228,7 @@ resource "castai_edge_location" "this" {
   cluster_id      = var.cluster_id
   organization_id = var.organization_id
   description     = var.description != null ? var.description : "OCI edge location onboarded by Terraform"
+  addons          = var.addons
   zones = [
     for ad in data.oci_identity_availability_domains.ads.availability_domains : {
       id   = regex("-(\\d+)$", ad.name)[0]
