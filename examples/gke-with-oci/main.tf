@@ -49,7 +49,7 @@ module "castai-gke-cluster" {
 # =============================================================================
 
 module "castai_oci_edge_location" {
-  source = "../.."
+  source = "castai/omni-edge-location-oci/castai"
 
   providers = {
     oci      = oci
