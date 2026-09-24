@@ -1,0 +1,14 @@
+# CAST AI
+castai_api_url       = "https://api.cast.ai" # Optional, defaults to https://api.cast.ai
+castai_api_token      = "castai-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+castai_cluster_id     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # CAST AI console -> Clusters -> <cluster>
+castai_organization_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # CAST AI console -> Settings -> Organization
+
+# SSH key for edge instances
+ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... user@host"
+
+# OCI
+oci_tenancy_id    = "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+oci_compartment_id = "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+oci_region         = "eu-frankfurt-1"
+oci_home_region    = "us-ashburn-1"
