@@ -239,6 +239,7 @@ resource "castai_edge_location" "this" {
   control_plane      = var.control_plane
   control_plane_mode = "SHARED"
   networking         = var.networking
+  liqo               = var.liqo
 
   oci = {
     tenancy_id            = local.tenancy_id
