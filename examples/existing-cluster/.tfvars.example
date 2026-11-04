@@ -1,0 +1,17 @@
+castai_api_token = "your-castai-api-token"
+castai_api_url   = "https://api.cast.ai"
+organization_id  = "your-castai-organization-id"
+cluster_id       = "your-castai-cluster-id"
+
+region          = "your-oci-region"
+tenancy_id      = "ocid1.tenancy.oc1..xxxxxxxxx"
+compartment_id  = "ocid1.compartment.oc1..xxxxxxxxx"
+oci_home_region = "your-oci-home-region"
+
+# name                = "my-edge-location"            # optional, auto-generated if omitted
+# description         = "My OCI edge location"        # optional
+# control_plane  = { ha = true }                      # optional, HA enabled by default
+# liqo = {                                            # optional
+#   gateway_replicas = 2
+#   gateway_server   = { external_address = "gw.edge.example.com" }
+# }
